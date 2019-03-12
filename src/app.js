@@ -1,41 +1,40 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
 
-const btn = $('#btn');
-const input = $('#input');
-const output = $('#output');
+const numbers = [1,3,4,5] ;
 
-const btnStream$ = Rx.Observable.fromEvent(btn, 'click') ;
-btnStream$.subscribe( 
-    (e) => {
-        console.log(e.target.innerHTML);
+const numbers$ = Rx.Observable.from(numbers);
+
+numbers$.subscribe(
+    v => {
+        console.log(v);
     },
-    (err) => {
+    err => {
         console.log(err);
     },
-    () => {
-        console.log('Completed');
+    complete => {
+        console.log('completed')
     }
-    );
+)
 
-const inputStream$ = Rx.Observable.fromEvent(input, 'keyup');
+const posts = [
+    {title: 'postone', body: 'thisis body'},
+    {title: 'tow', body: 'this two'}
+];
 
-inputStream$.subscribe(
-    (e) => {
-        console.log(e.currentTarget.value);
-        output.append(e.target.value)
+const posts$ = Rx.Observable.from(posts);
+
+
+posts$.subscribe(
+    v => {
+        console.log(v);
+        $('#posts').append('<li>'+ v.title + '</li>');
+
     },
-    (err) => console.log(err) ,
-    () => console.log('Completed')
-);
-
-const moveStream$ = Rx.Observable.fromEvent(document, 'mousemove');
-
-moveStream$.subscribe(
-    (e) => {
-        console.log(e.currentTarget.value);
-        output.html('X: '+ e.clientX + ' Y: ' + e.clientY );
+    err => {
+        console.log(err);
     },
-    (err) => console.log(err) ,
-    () => console.log('Completed')
-);
+    complete => {
+        console.log('completed')
+    }
+)
