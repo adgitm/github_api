@@ -1,40 +1,33 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
+import { resolve } from 'path';
 
-const numbers = [1,3,4,5] ;
+const mypromise = new Promise((resolve,reject) => {
 
-const numbers$ = Rx.Observable.from(numbers);
+    console.log('creating promise');
+    setTimeout(() => {
+        resolve('hello');
+    }, 3000);
+});
 
-numbers$.subscribe(
-    v => {
-        console.log(v);
-    },
-    err => {
-        console.log(err);
-    },
-    complete => {
-        console.log('completed')
-    }
-)
+function getUser(username) {
+    return $.ajax({
+        url: 'https://api.github.com/users/' + username,
+        dataType: 'jsonp'
+    }).promise();
+}
 
-const posts = [
-    {title: 'postone', body: 'thisis body'},
-    {title: 'tow', body: 'this two'}
-];
+const inputSource$ = Rx.Observable.fromEvent($('#input'), 'keyup');
 
-const posts$ = Rx.Observable.from(posts);
+inputSource$.subscribe( x => {
+    Rx.Observable.fromPromise(getUser(x.target.value))
+    .subscribe(x => {
+        console.log(x.data);
+        $('#name').text(x.data.name);
+        $('#blog').text(x.data.blog)
+        $('#repos').text('public repos  ' + x.data.public_repos)
+    })
+
+})
 
 
-posts$.subscribe(
-    v => {
-        console.log(v);
-        $('#posts').append('<li>'+ v.title + '</li>');
-
-    },
-    err => {
-        console.log(err);
-    },
-    complete => {
-        console.log('completed')
-    }
-)
